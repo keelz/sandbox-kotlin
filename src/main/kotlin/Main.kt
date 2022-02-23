@@ -1,11 +1,34 @@
 import kotlin.math.roundToInt
 
 fun main() {
-    mapExample()
-//    listComposition()
-//    anonymousArray()
-//    arrayOfStuff()
-//    tupleExample()
+}
+
+// explicitSafeTypeCasting
+// - use of 'as?' to safely type cast a String
+fun explicitSafeTypeCasting() {
+    fun fetchMessage(id: Int): Any = if (id == 1) "Record found" else java.lang.StringBuilder("data not found")
+    println("Message length: ${(fetchMessage(1) as? String)?.length ?: "---"}")
+}
+
+// whatToDo
+// - use of 'is' in 'when' expression to gain automatic type casting
+fun whatToDo(dayOfWeek: Any) = when (dayOfWeek) {
+    "Saturday", "Sunday" -> "Relax"
+    in listOf("Monday", "Tuesday", "Wednesday", "Thursday") -> "Work hard"
+    in 2..4 -> "Work hard"
+    is String -> "What, you provided a string of length ${dayOfWeek.length}"
+    else -> "No clue"
+}
+
+// overrideEquals
+// - use a class that overrides the 'equals' Object method
+// - use of 'is' keyword to check type and gain automatic type casting
+fun overrideAEquals() {
+    val odie: Any = Animal(2)
+    val toto: Any = Animal(2)
+    val butch = Animal(3)
+    println(odie == toto)
+    println(odie == butch)
 }
 
 // mapExample
@@ -83,6 +106,8 @@ fun tupleExample() {
     }
 }
 
+// isAlive
+// - example of 'when' expression
 fun isAlive(alive: Boolean, numberOfLiveNeighbors: Int) = when {
     numberOfLiveNeighbors < 2 -> false
     numberOfLiveNeighbors > 3 -> false
@@ -90,6 +115,8 @@ fun isAlive(alive: Boolean, numberOfLiveNeighbors: Int) = when {
     else -> alive && numberOfLiveNeighbors == 2
 }
 
+// printWhatToDo
+// - example of 'when' expression
 fun printWhatToDo(dayOfWeek: Any) {
     when (dayOfWeek) {
         "Saturday", "Sunday" -> println("Relax")
