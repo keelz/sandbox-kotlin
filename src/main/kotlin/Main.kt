@@ -3,6 +3,9 @@ import kotlin.math.roundToInt
 
 fun main() {}
 
+// findFirst
+// - helper method for booksBooks
+// - 'filter' implementation with generics
 inline fun <reified T> findFirst(books: List<Book>): T {
     val selected = books.filter { book -> book is T }
     if (selected.isEmpty()) {
@@ -11,6 +14,8 @@ inline fun <reified T> findFirst(books: List<Book>): T {
     return selected[0] as T
 }
 
+// booksBooks
+// - use of generics with a 'filter' to reduce list of objects.
 fun booksBooks() {
     val books: List<Book> = listOf(
         Fiction("Moby Dick"),
