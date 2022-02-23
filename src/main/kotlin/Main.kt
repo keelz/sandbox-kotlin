@@ -74,6 +74,7 @@ fun arrayOfStuff() {
 // - use of 'to' operator to create a tuple from left and right operands
 // - use of 'iterator' api to loop through values of a list<R>
 fun tupleExample() {
+    fun getTemperatureAtAirport(code: String): String = "${(Math.random() * 30).roundToInt() + code.count()} C"
     println("** tupleExample **")
     val airportCodes = listOf("LAX", "SFO", "PDX", "SEA")
     val temperatures = airportCodes.map { code -> code to getTemperatureAtAirport(code) } // to operator composes a tuple from left and right operands
@@ -82,4 +83,26 @@ fun tupleExample() {
     }
 }
 
-fun getTemperatureAtAirport(code: String): String = "${(Math.random() * 30).roundToInt() + code.count()} C"
+fun isAlive(alive: Boolean, numberOfLiveNeighbors: Int) = when {
+    numberOfLiveNeighbors < 2 -> false
+    numberOfLiveNeighbors > 3 -> false
+    numberOfLiveNeighbors == 3 -> true
+    else -> alive && numberOfLiveNeighbors == 2
+}
+
+fun printWhatToDo(dayOfWeek: Any) {
+    when (dayOfWeek) {
+        "Saturday", "Sunday" -> println("Relax")
+        in listOf("Monday", "Tuesday", "Wednesday", "Thursday") -> println("work hard")
+        in 2..4 -> println("work hard")
+        is String -> println("what?")
+    }
+}
+
+fun systemInfo(): String = when (val numberOfCores = Runtime.getRuntime().availableProcessors()) {
+    1 -> "1 core, packing this one to the museum"
+    in 2..16 -> "You have $numberOfCores cores"
+    else -> "$numberOfCores cores!, I want your machine!"
+}
+
+fun greet(name: String, weight: Int = 250, age: Int, vararg stuff: String) = "hello $name is $age years old and weighs $weight lbs ${stuff.joinToString(separator = " ")}."
