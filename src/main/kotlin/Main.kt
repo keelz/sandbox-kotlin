@@ -1,6 +1,69 @@
+import java.lang.Appendable
 import kotlin.math.roundToInt
 
-fun main() {
+fun main() {}
+
+inline fun <reified T> findFirst(books: List<Book>): T {
+    val selected = books.filter { book -> book is T }
+    if (selected.isEmpty()) {
+        throw java.lang.RuntimeException("Not Found")
+    }
+    return selected[0] as T
+}
+
+fun booksBooks() {
+    val books: List<Book> = listOf(
+        Fiction("Moby Dick"),
+        NonFiction("Learn to Code"),
+        Fiction("LOTR")
+    )
+    println(findFirst<NonFiction>(books).name)
+}
+
+// starProjection
+// - use of star project to permit only read-out and not write-in
+fun starProjection(values: Array<*>) {
+    for (value in values) {
+        println(value)
+    }
+    // values[0] = values[1] //ERROR
+}
+
+// helloThere
+// - use of 'where' to implement parametric type conform to AutoClosable and Appendable
+fun helloThere() {
+    fun <T> useAndClose(input: T)
+            where T : AutoCloseable,
+                  T : Appendable {
+        input.append("there")
+        input.close()
+    }
+
+    val writer = java.io.StringWriter()
+    writer.append("hello ")
+    useAndClose(writer)
+    println(writer)
+}
+
+fun copyCopy() {
+    val fruitsBasket1 = Array<Banana>(3) { _ -> Banana() }
+    val fruitsBasket2 = Array<Any>(3) { _ -> Orange() }
+    copyFromTo(fruitsBasket1, fruitsBasket2)
+}
+
+fun copyFromTo(from: Array<out Fruit>, to: Array<in Fruit>) {
+    for (i in from.indices) {
+        to[i] = from[i]
+    }
+}
+
+fun playWithFruit() {
+    val bananas: List<Banana> = listOf()
+    receiveFruits(bananas)
+}
+
+fun receiveFruits(fruits: List<Fruit>) {
+    println("Number of fruits: ${fruits.size}")
 }
 
 // explicitSafeTypeCasting
@@ -64,7 +127,7 @@ fun mapExample() {
 // listComposition()
 // - use of '+' and '-' operators to demonstrate immutable list composition
 fun listComposition() {
-    fun pf (fruit: String) = println("\t$fruit")
+    fun pf(fruit: String) = println("\t$fruit")
     println("** listComposition **")
     val fruits = listOf<String>("apple", "Orange", "tomato")
     fruits.iterator().forEach { f -> pf(f) }
@@ -100,7 +163,8 @@ fun tupleExample() {
     fun getTemperatureAtAirport(code: String): String = "${(Math.random() * 30).roundToInt() + code.count()} C"
     println("** tupleExample **")
     val airportCodes = listOf("LAX", "SFO", "PDX", "SEA")
-    val temperatures = airportCodes.map { code -> code to getTemperatureAtAirport(code) } // to operator composes a tuple from left and right operands
+    val temperatures =
+        airportCodes.map { code -> code to getTemperatureAtAirport(code) } // to operator composes a tuple from left and right operands
     temperatures.iterator().forEach { temp ->
         println("\tAirport: ${temp.first}: Temperature: ${temp.second}")
     }
@@ -132,4 +196,5 @@ fun systemInfo(): String = when (val numberOfCores = Runtime.getRuntime().availa
     else -> "$numberOfCores cores!, I want your machine!"
 }
 
-fun greet(name: String, weight: Int = 250, age: Int, vararg stuff: String) = "hello $name is $age years old and weighs $weight lbs ${stuff.joinToString(separator = " ")}."
+fun greet(name: String, weight: Int = 250, age: Int, vararg stuff: String) =
+    "hello $name is $age years old and weighs $weight lbs ${stuff.joinToString(separator = " ")}."
