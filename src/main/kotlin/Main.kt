@@ -1,7 +1,102 @@
+import util.*
+import util.Temperature.c2f
 import java.lang.Appendable
 import kotlin.math.roundToInt
 
-fun main() {}
+fun main() {
+    useTask()
+}
+
+fun useTask() {
+    val task1 = Task(1, "create project", completed = false, assigned = true)
+    val task1Completed = task1.copy(completed = true, assigned = false)
+    println(task1Completed)
+    println(task1Completed.name)
+
+    val (id, _, _, isAssigned) = task1
+    println("Id: $id Assigned: $isAssigned")
+}
+
+fun useComparable() {
+    println(PriorityPair(2, 1))
+    println(PriorityPair("A", "B"))
+}
+
+fun useMachineOperator() {
+    // this is probably the weirdest code I've ever seen
+    MachineOperator.create("mo")
+    println(MachineOperator.checkedIn)
+}
+
+@JvmInline
+value class SSN(val id: String)
+
+fun receiveSSN(ssn: SSN) {
+    println("Received $ssn")
+}
+
+fun useCar() {
+    val car = Car(2019, "Red")
+    car.color = "blue"
+    println(car.color)
+    car.color = "green"
+    println(car.color)
+}
+
+fun useUtil() {
+    println(unitsSupported())
+    println(Temperature.f2c(75.253))
+    println(c2f(24.305))
+    println()
+}
+
+object Sun: Runnable {
+    val radiusInKM = 696000
+    var coreTemperatureInC = 1500000
+    override fun run() {
+        TODO("Not yet implemented")
+    }
+}
+
+object Util {
+    val name: String = "bullshit"
+    fun numberOfProcessors() = Runtime.getRuntime().availableProcessors()
+}
+
+fun createRunnableThree(): Runnable = object: Runnable, AutoCloseable {
+    override fun run() {
+        TODO("Not yet implemented")
+    }
+
+    override fun close() {
+        TODO("Not yet implemented")
+    }
+}
+
+fun createRunnableTwo(): Runnable = Runnable { println("you called...") }
+
+fun createRunnable(): Runnable {
+    // verbose
+    val runnable = object : Runnable {
+        override fun run() {
+            TODO("Not yet implemented")
+        }
+    }
+    runnable.run()
+    // inline with lambda
+    // If the interface implemented by the anonymous inner class is a single abstract method interface
+    // (what Java 8 calls a functional interface), then we can directly provide the implementation without
+    // the need to specify the method name
+    return Runnable { TODO("Not yet implemented") }
+}
+
+fun drawCircle() {
+    val circle = object {
+        val x = 10
+        val y = 20
+        val radius = 30
+    }
+}
 
 // findFirst
 // - helper method for booksBooks
