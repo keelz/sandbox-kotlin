@@ -2,9 +2,53 @@ import util.*
 import util.Temperature.c2f
 import java.lang.Appendable
 import kotlin.math.roundToInt
+import kotlin.properties.Delegates.observable
+import kotlin.properties.Delegates.vetoable
+import kotlin.reflect.KProperty
 
 fun main() {
-    propertyDelegationVariant()
+    vetoableExample()
+}
+
+fun vetoableExample() {
+    // 'vetoable' receives an initial value and a lambda expression that returns a Boolean
+    // the resulting Boolean value will determine if the mutable value is changed (true) or
+    // not changed (false). it seems like a 'vetoable' value must be a mutable variable 'var'
+    var count by vetoable(0) { _, oldValue, newValue -> newValue > oldValue }
+    println("the value of count is $count")
+    count++
+    println("the value of count is $count")
+    count--
+    println("the value of count is $count")
+}
+
+fun observableExample() {
+    var count by observable(0) { _, oldValue, newValue ->
+        // listener method as a lambda to the observable delegate
+        println("property value has changed from $oldValue to $newValue")
+    }
+
+    println("the value of count is $count")
+    count++
+    println("the value of count is $count")
+    count--
+    println("the value of count is $count")
+}
+
+fun useGetTemperature() {
+    val showTemperature = false
+    val city = "boulder"
+    val temperature by lazy { getTemperature(city) }
+
+    if (showTemperature && temperature > 20)
+        println("warm")
+    else
+        println("nothing to report") //nothing to report
+}
+
+fun getTemperature(city: String): Double {
+    println("fetch from webservice for $city")
+    return 30.0
 }
 
 fun propertyDelegationVariant() {
