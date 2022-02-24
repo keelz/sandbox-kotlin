@@ -4,6 +4,47 @@ import java.lang.Appendable
 import kotlin.math.roundToInt
 
 fun main() {
+    propertyDelegationVariant()
+}
+
+fun propertyDelegationVariant() {
+    val data = listOf(
+        mutableMapOf<String, Any>(
+            "title" to "using delegation",
+            "likes" to 2,
+            "comment" to "keep it simple",
+        ),
+        mutableMapOf<String, Any>(
+            "title" to "using inheritance",
+            "likes" to 1,
+            "comment" to "prefer delegation where possible",
+        ),
+        mutableMapOf<String, Any>(
+            "title" to "using inheritance shit",
+            "likes" to 1,
+            "comment" to "fuck this stupid shit",
+        ),
+    )
+
+    val forPost1 = PostComment(data[0])
+    val forPost2 = PostComment(data[1])
+    val forPost3 = PostComment(data[2])
+
+    forPost1.likes++
+
+    println(forPost1)
+    println(forPost2)
+    println(forPost3)
+}
+
+fun propertyDelegate() {
+    var comment: String by PoliteString("some nice message")
+    println(comment)
+
+    comment = "this is stupid"
+    println(comment)
+
+    println("comment is of length ${comment.length}")
 }
 
 fun useManager() {
