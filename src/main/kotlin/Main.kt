@@ -14,10 +14,10 @@ fun withCards() {
         is Pip -> "${card.number} of ${card.suit}"
     }
 
-    println(process(Ace("Diamond")))
-    println(process(Queen("Clubs")))
-    println(process(Pip("Spades", 2)))
-    println(process(Pip("Hearts", 6)))
+    println(process(Ace(Suit.DIAMONDS)))
+    println(process(Queen(Suit.HEARTS)))
+    println(process(Pip(Suit.CLUBS, 2)))
+    println(process(Pip(Suit.SPADES, 6)))
 }
 
 fun useTask() {
