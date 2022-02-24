@@ -1,5 +1,4 @@
 .DS_Store
-.idea/shelf
 /target
 /confluence/target
 /dependencies/repo
@@ -74,3 +73,4 @@ outTmp/
 /test.output
 /kotlin-native/dist
 kotlin-ide/
+
