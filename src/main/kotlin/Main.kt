@@ -4,7 +4,17 @@ import java.lang.Appendable
 import kotlin.math.roundToInt
 
 fun main() {
-    withCards()
+}
+
+fun useManager() {
+    val doe = Manager(CSharpProgrammer())
+    val roe = Manager(JavaProgrammer())
+
+    doe.work()
+    doe.meeting()
+
+    roe.work()
+    roe.takeVacation()
 }
 
 fun withCards() {
