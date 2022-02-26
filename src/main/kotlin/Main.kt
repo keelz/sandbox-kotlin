@@ -4,10 +4,113 @@ import java.lang.Appendable
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates.observable
 import kotlin.properties.Delegates.vetoable
-import kotlin.reflect.KProperty
 
 fun main() {
-    vetoableExample()
+    sbox()
+}
+
+object Terminal {
+    fun write(v: Int) = println(v)
+}
+
+fun sbox() {
+    val x = listOf<(n: Int) -> Unit>(
+        { i -> println("one $i") },
+        { i -> println("two $i") },
+    )
+    (1..5).forEach() { n -> x.forEach() { it(n) } }
+}
+
+// an inline function that receives lambdas as parameters can significantly improve performance.
+// bytecode for the function will be placed inline at the call location.
+// inline functions must (currently) be declared at package scope.
+inline fun invokeTwo(
+    n: Int,
+    a1: (Int) -> Unit,
+    a2: (Int) -> Unit,
+): (Int) -> Unit {
+    a1(n); a2(n)
+    return { println("finished with $it") }
+}
+
+fun doInvokeTwo() {
+    val r = { n: Int -> println("report for $n") }
+    (1..5).forEach { invokeTwo(it, r, r)(it) }
+}
+
+fun functionalSweetness() {
+    //fun isPrime(n: Int) = n > 1 && (2 until n).none { n % it == 0 }
+    //fun walkTo(action: (Int) -> Unit, n: Int) = (1..n).forEach { action(it) }
+    //fun walkTo(n: Int, action: (Int) -> Unit) = (1..n).forEach { action(it) }
+    fun walkTo(n: Int, action: (Int) -> Unit) = (1..n).forEach(action)
+    walkTo(5, Terminal::write)
+
+    val names = listOf("me", "you", "it")
+    println(names.find { it.length == 5 })
+    println(names.find { it.length == 3 })
+
+//    fun predicateOfLength(length: Int): (String) -> Boolean {
+//        return { input: String -> input.length == length }
+//    }
+    fun predicateOfLength(length: Int) = { input: String -> input.length == length }
+    println(names.find(predicateOfLength(5)))
+    println(names.find(predicateOfLength(4)))
+
+    // not p referred
+    // val checkLength5: (String) -> Boolean = { name: String -> name.length == 5 }
+    // val checkLength5 = { name: String -> name.length == 5 }
+    val checkLength5 = fun(name: String): Boolean { return name.length == 5 }
+    println(names.find(checkLength5))
+    println(names.find(fun(name: String): Boolean { return name.length == 5 }))
+
+    fun invokeWith(n: Int, action: (Int) -> Unit) {
+        println("enter invokedWith $n")
+        action(n)
+        println("exit invokeWith $n")
+    }
+
+    fun caller() {
+        (1..3).forEach { i ->
+            // explicit labeled return
+            invokeWith(i) here@{
+                println("enter for $it}")
+                if (it == 2) {
+                    return@here
+                } // explicit labeled return
+                println("exit for $it")
+            }
+            invokeWith(i) {
+                println("enter for $it")
+                if (it == 3) {
+                    return@invokeWith
+                } // implicit return
+                println("exit for $it")
+            }
+        }
+        println("end of caller")
+    }
+
+    fun callerVariant() {
+        (1..3).forEach { i ->
+            println("in forEach for $i")
+            if (i == 2) {
+                return
+            } // non-local return
+
+            invokeWith(i) {
+                println("enter for $it")
+                if (it == 2) {
+                    return@invokeWith
+                }
+                println("exit for $it")
+            }
+        }
+        println("end of caller")
+    }
+    caller()
+    println("after call to caller")
+    callerVariant()
+    println("after call to callerVariant")
 }
 
 fun vetoableExample() {
