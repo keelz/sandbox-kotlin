@@ -6,7 +6,25 @@ import kotlin.properties.Delegates.observable
 import kotlin.properties.Delegates.vetoable
 
 fun main() {
-    sbox()
+    letsDoSomeSequences()
+}
+
+fun letsDoSomeSequences() {
+    // creating slices from infinite sequences that are lazy operations is pretty sweet
+    fun isPrime(n: Long) = n > 1 && (2 until n).none { i -> n % i == 0L }
+    tailrec fun nextPrime(n: Long): Long = if (isPrime(n + 1)) n + 1 else nextPrime(n + 1)
+    val primesOne = generateSequence(2, ::nextPrime)
+    (primesOne.drop(7).take(6).toList()).forEach() { println(it) }
+    val primesTwo = sequence {
+        var i: Long = 0
+         while (true) {
+             i++
+             if (isPrime(i)) {
+                 yield(i)
+             }
+         }
+    }
+    (primesTwo.drop(7).take(6).toList()).forEach() { println(it) }
 }
 
 object Terminal {
