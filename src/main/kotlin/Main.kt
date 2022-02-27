@@ -6,13 +6,132 @@ import kotlin.properties.Delegates.observable
 import kotlin.properties.Delegates.vetoable
 
 fun main() {
-    useInfix()
+    useMailerSix()
+}
+
+fun useMailerSix() {
+    fun createMailer() = Mailer()
+
+    fun prepareMailer(m: Mailer):Unit {
+        m.run {
+            from("builder@agiledeveloper.com")
+            to("venkats@agiledeveloper.com")
+            subject("your code sucks")
+            body("details")
+        }
+    }
+
+    fun sendMail(m: Mailer): Unit {
+        m.send()
+        println("Mail sent")
+    }
+
+    // this is the way
+    createMailer().also(::prepareMailer).also(::sendMail)
+}
+
+fun useMailerFive() {
+    fun createMailer() = Mailer()
+
+    fun prepareAndSend(m: Mailer) = m.run {
+        from("builder@agiledeveloper.com")
+        to("venkats@agiledeveloper.com")
+        subject("your code sucks")
+        body("details")
+        send()
+    }
+
+    // the way of ancients
+    val m = createMailer()
+    val r = prepareAndSend(m)
+    println(r)
+
+    // the way of the dying
+    val r2 = createMailer().let { prepareAndSend(it) }
+    println(r2)
+
+    // this is the way
+    println(createMailer().let(::prepareAndSend))
+}
+
+fun useMailerFour() {
+    val r = Mailer().run {
+        from("builder@agiledeveloper.com")
+        to("venkats@agiledeveloper.com")
+        subject("your code sucks")
+        body("details")
+        send()
+    }
+    println(r)
+}
+
+fun useMailerThree() {
+    val m = Mailer().apply {
+        from("builder@agiledeveloper.com")
+        to("venkats@agiledeveloper.com")
+        subject("your code sucks")
+        body("details")
+    }
+    val r = m.send()
+    println(r)
+}
+
+fun useMailerTwo() {
+    val mailer = Mailer()
+        .apply { from("builder@agiledeveloer.com") }
+        .apply { to("venkats@agiledeveloper.com") }
+        .apply { subject("Your code sucks") }
+        .apply { body("details") }
+    val r = mailer.send()
+    println(r)
+}
+
+fun useMailer() {
+    val mailer = Mailer()
+    mailer.from("builder@agiledeveloper.com")
+    mailer.to("venkats@agiledeveloper.com")
+    mailer.subject("your code sucks")
+    mailer.body("...details...")
+    val result = mailer.send()
+    println(result)
+}
+
+fun fluencyWithAnyObject() {
+    val format = "%-15s%-15s%-15s%-15s"
+    val str = "context"
+    val result = "RESULT"
+
+    println(String.format("%-15s%-15s%-15s%-15s%-15s", "Method", "Argument", "Receiver", "Return", "Result"))
+    (1..15*5).forEach() { _ -> print("#") }
+    print("\n")
+
+    val r1 = str.let { arg ->
+        print(String.format(format, "let", arg, "N/A", result))
+        result
+    }
+    println(String.format("%-15s", r1))
+
+    val r2 = str.also { arg ->
+        print(String.format(format, "also", arg, "N/A", result))
+    }
+    println(String.format("%-15s", r2))
+
+    val r3 = str.run {
+        print(String.format(format, "run", "N/A", this, result))
+        result
+    }
+    println(String.format("%-15s", r3))
+
+    val r4 = str.apply {
+        print(String.format(format, "apply", "N/A", this, result))
+    }
+    println(String.format("%-15s", r4))
 }
 
 fun useInfix() {
     val p = Point(4, 9)
     val c = Circle(13, 12, 87)
-    println(c contains p)
+    println("$p, ${c contains p}")
 }
 
 fun extendFunctionsYo() {
