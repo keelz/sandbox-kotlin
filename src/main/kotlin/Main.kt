@@ -6,7 +6,13 @@ import kotlin.properties.Delegates.observable
 import kotlin.properties.Delegates.vetoable
 
 fun main() {
-    extendFunctionsYo()
+    useInfix()
+}
+
+fun useInfix() {
+    val p = Point(4, 9)
+    val c = Circle(13, 12, 87)
+    println(c contains p)
 }
 
 fun extendFunctionsYo() {
