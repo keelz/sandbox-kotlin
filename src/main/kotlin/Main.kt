@@ -14,7 +14,7 @@ fun main() {
 
 fun dslOne() {
     infix fun Int.days(timing: Tense) = DateUtil(this, timing)
-    println(2 days from_now)
+    println(2 days ago)
 }
 
 fun multipleReceivers() {

@@ -5,10 +5,11 @@ class DateUtil(private val number: Int, private val tense: Tense) {
 
     override fun toString(): String {
         val today = Calendar.getInstance()
+        fun handleTense(t: Calendar, n: Int) { t.add(Calendar.DAY_OF_MONTH, n) }
 
         when (tense) {
-            Tense.ago -> today.add(Calendar.DAY_OF_MONTH, -number)
-            Tense.from_now -> today.add(Calendar.DAY_OF_MONTH, number)
+            Tense.ago -> handleTense(today, -number)
+            Tense.from_now -> handleTense(today, number)
         }
 
         return today.time.toString()
