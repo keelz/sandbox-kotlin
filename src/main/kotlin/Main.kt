@@ -10,9 +10,7 @@ fun main() {
 }
 
 fun useMailerSix() {
-    fun createMailer() = Mailer()
-
-    fun prepareMailer(m: Mailer):Unit {
+    fun prepareMailer(m: Mailer) {
         m.run {
             from("builder@agiledeveloper.com")
             to("venkats@agiledeveloper.com")
@@ -21,13 +19,13 @@ fun useMailerSix() {
         }
     }
 
-    fun sendMail(m: Mailer): Unit {
+    fun sendMail(m: Mailer): {
         m.send()
         println("Mail sent")
     }
 
     // this is the way
-    createMailer().also(::prepareMailer).also(::sendMail)
+    Mailer().also(::prepareMailer).also(::sendMail)
 }
 
 fun useMailerFive() {
