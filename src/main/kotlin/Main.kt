@@ -6,7 +6,29 @@ import kotlin.properties.Delegates.observable
 import kotlin.properties.Delegates.vetoable
 
 fun main() {
-    useMailerSix()
+    multipleReceivers()
+}
+
+fun multipleReceivers() {
+    // this is cool
+    fun top(func: String.() -> Unit) = "hello".func()
+    fun nested(func: Int.() -> Unit) = (-2).func()
+
+    top {
+        println("In outer lambda $this and $length")
+
+        nested {
+            println("in inner lambda $this and ${toDouble()}")
+            println("from inner through receiver of outer: $length")
+            println("from inner to outer receiver ${this@top}")
+        }
+    }
+}
+
+fun useReceivers() {
+    val printIt: String.() -> Unit = { println(this) }
+    val h = "Hello"
+    h.printIt()
 }
 
 fun useMailerSix() {
