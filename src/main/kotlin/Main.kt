@@ -9,7 +9,28 @@ import DateUtil.Tense
 import DateUtil.Tense.*
 
 fun main() {
-    doMeeting()
+    sequentialRun()
+}
+
+fun sequentialRun() {
+    fun taskOne() {
+        println("one")
+    }
+
+    fun taskTwo() {
+        println("two")
+    }
+
+    println("start")
+
+    run {
+        taskOne()
+        taskTwo()
+
+        println("called task1 and task2 from ${Thread.currentThread()}")
+    }
+
+    println("done")
 }
 
 fun doMeeting() {
