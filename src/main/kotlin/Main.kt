@@ -4,9 +4,17 @@ import java.lang.Appendable
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates.observable
 import kotlin.properties.Delegates.vetoable
+// dsl imports
+import DateUtil.Tense
+import DateUtil.Tense.*
 
 fun main() {
-    multipleReceivers()
+    dslOne()
+}
+
+fun dslOne() {
+    infix fun Int.days(timing: Tense) = DateUtil(this, timing)
+    println(2 days from_now)
 }
 
 fun multipleReceivers() {
@@ -122,7 +130,7 @@ fun fluencyWithAnyObject() {
     val result = "RESULT"
 
     println(String.format("%-15s%-15s%-15s%-15s%-15s", "Method", "Argument", "Receiver", "Return", "Result"))
-    (1..15*5).forEach() { _ -> print("#") }
+    (1..15 * 5).forEach() { _ -> print("#") }
     print("\n")
 
     val r1 = str.let { arg ->
@@ -157,7 +165,7 @@ fun useInfix() {
 fun extendFunctionsYo() {
     // this is nifty, feels like a function curry to me
     fun <T, R, U> ((T) -> R).andThen(next: (R) -> U): (T) -> U = { input: T -> next(this(input)) }
-    fun increment(number: Int):Double = number + 1.toDouble()
+    fun increment(number: Int): Double = number + 1.toDouble()
     fun double(number: Double) = number * 2
     val incrementAndDouble = ::increment.andThen(::double)
     println(incrementAndDouble(5))
@@ -176,12 +184,12 @@ fun letsDoSomeSequences() {
     (primesOne.drop(7).take(6).toList()).forEach() { println(it) }
     val primesTwo = sequence {
         var i: Long = 0
-         while (true) {
-             i++
-             if (isPrime(i)) {
-                 yield(i)
-             }
-         }
+        while (true) {
+            i++
+            if (isPrime(i)) {
+                yield(i)
+            }
+        }
     }
     (primesTwo.drop(7).take(6).toList()).forEach() { println(it) }
 }
@@ -226,7 +234,7 @@ fun functionalSweetness() {
     println(names.find { it.length == 5 })
     println(names.find { it.length == 3 })
 
-//    fun predicateOfLength(length: Int): (String) -> Boolean {
+    //    fun predicateOfLength(length: Int): (String) -> Boolean {
 //        return { input: String -> input.length == length }
 //    }
     fun predicateOfLength(length: Int) = { input: String -> input.length == length }
@@ -383,7 +391,7 @@ fun useManager() {
 }
 
 fun withCards() {
-    fun process(card: Card) = when(card) {
+    fun process(card: Card) = when (card) {
         is Ace -> "${card.javaClass.name} of ${card.suit}"
         is King, is Queen, is Jack -> "$card"
         is Pip -> "${card.number} of ${card.suit}"
@@ -438,7 +446,7 @@ fun useUtil() {
     println()
 }
 
-object Sun: Runnable {
+object Sun : Runnable {
     val radiusInKM = 696000
     var coreTemperatureInC = 1500000
     override fun run() {
@@ -451,7 +459,7 @@ object Util {
     fun numberOfProcessors() = Runtime.getRuntime().availableProcessors()
 }
 
-fun createRunnableThree(): Runnable = object: Runnable, AutoCloseable {
+fun createRunnableThree(): Runnable = object : Runnable, AutoCloseable {
     override fun run() {
         TODO("Not yet implemented")
     }
