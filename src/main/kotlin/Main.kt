@@ -9,7 +9,14 @@ import DateUtil.Tense
 import DateUtil.Tense.*
 
 fun main() {
-    dslOne()
+    doMeeting()
+}
+
+fun doMeeting() {
+   "Release Planning" meeting {
+       start at 14.30
+       end by 15.20
+    }
 }
 
 fun dslOne() {
