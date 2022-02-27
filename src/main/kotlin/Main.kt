@@ -9,6 +9,11 @@ fun main() {
     letsDoSomeSequences()
 }
 
+fun useComplex() {
+    println(Complex(4, 2) * Complex(-3, 4))
+    println(Complex(1, 2) * Complex(-3, 4))
+}
+
 fun letsDoSomeSequences() {
     // creating slices from infinite sequences that are lazy operations is pretty sweet
     fun isPrime(n: Long) = n > 1 && (2 until n).none { i -> n % i == 0L }
