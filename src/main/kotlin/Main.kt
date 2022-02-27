@@ -19,7 +19,7 @@ fun useMailerSix() {
         }
     }
 
-    fun sendMail(m: Mailer): {
+    fun sendMail(m: Mailer) {
         m.send()
         println("Mail sent")
     }
