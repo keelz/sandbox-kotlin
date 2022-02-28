@@ -12,7 +12,18 @@ import kotlinx.coroutines.*
 import java.lang.Runnable
 
 fun main() {
-    singleThreadPool()
+    runAsyncExample()
+}
+
+fun runAsyncExample() {
+    runBlocking {
+        val count: Deferred<Int> = async(Dispatchers.Default) {
+            println("fetching in ${Thread.currentThread()}")
+            Runtime.getRuntime().availableProcessors()
+        }
+        println("called the function in ${Thread.currentThread()}")
+        println("number of cores is ${count.await()}")
+    }
 }
 
 fun singleThreadPool() {
