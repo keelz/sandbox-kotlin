@@ -4,12 +4,108 @@ import java.lang.Appendable
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates.observable
 import kotlin.properties.Delegates.vetoable
+import java.util.concurrent.Executors
 // dsl imports
 import DateUtil.Tense
 import DateUtil.Tense.*
+import kotlinx.coroutines.*
+import java.lang.Runnable
 
 fun main() {
-    sequentialRun()
+    singleThreadPool()
+}
+
+fun singleThreadPool() {
+    suspend fun taskOne() {
+        println("start taskOne in thread ${Thread.currentThread()}")
+        yield()
+        println("end taskOne in Thread ${Thread.currentThread()}")
+    }
+
+    suspend fun taskTwo() {
+        println("start taskTwo in Thread ${Thread.currentThread()}")
+        yield()
+        println("end taskTwo in Thread ${Thread.currentThread()}")
+    }
+
+    // switch thread from main following a 'yield'
+    Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors()).asCoroutineDispatcher().use { context ->
+        println("start")
+
+        runBlocking {
+            launch(context = context, start = CoroutineStart.UNDISPATCHED) {
+                taskOne()
+            }
+
+            launch { taskTwo() }
+
+            println("called taskOne and taskTwo from ${Thread.currentThread()}")
+        }
+
+        println("done")
+    }
+
+    // execute on an isolated thread
+    Executors.newSingleThreadExecutor().asCoroutineDispatcher().use { context ->
+        println("start")
+
+        runBlocking {
+            launch(context) { taskOne() }
+            launch(Dispatchers.Default) { taskTwo() }
+
+            println("called taskOne and taskTwo from ${Thread.currentThread()}")
+        }
+
+        println("done")
+    }
+}
+
+fun coroutineTwo() {
+    suspend fun taskOne() {
+        println("start taskOne in thread ${Thread.currentThread()}")
+        yield()
+        println("end taskOne in Thread ${Thread.currentThread()}")
+    }
+
+    suspend fun taskTwo() {
+        println("start taskTwo in Thread ${Thread.currentThread()}")
+        yield()
+        println("end taskTwo in Thread ${Thread.currentThread()}")
+    }
+
+    println("start")
+
+    runBlocking {
+        launch(Dispatchers.Default) { taskOne() }
+        launch { taskTwo() }
+
+        println("called taskOne and taskTwo from ${Thread.currentThread()}")
+    }
+
+    println("done")
+}
+
+fun coroutineOne() {
+    fun taskOne() {
+        println("one")
+        println("${Thread.currentThread()}")
+    }
+
+    fun taskTwo() {
+        println("two")
+        println("${Thread.currentThread()}")
+    }
+
+    println("start")
+
+    runBlocking {
+        launch { taskOne() }
+        launch { taskTwo() }
+
+        println("called task1 and task2 from ${Thread.currentThread()}")
+    }
+
+    println("done")
 }
 
 fun sequentialRun() {
@@ -34,9 +130,9 @@ fun sequentialRun() {
 }
 
 fun doMeeting() {
-   "Release Planning" meeting {
-       start at 14.30
-       end by 15.20
+    "Release Planning" meeting {
+        start at 14.30
+        end by 15.20
     }
 }
 
