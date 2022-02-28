@@ -12,7 +12,19 @@ import kotlinx.coroutines.*
 import java.lang.Runnable
 
 fun main() {
-    runAsyncExample()
+    runCompute()
+}
+
+fun runCompute() = runBlocking<Unit> {
+    val c = Compute()
+
+    launch(Dispatchers.Default) {
+        c.computeTwo(2)
+    }
+
+    launch(Dispatchers.Default) {
+        c.computeTwo(2)
+    }
 }
 
 fun runAsyncExample() {
