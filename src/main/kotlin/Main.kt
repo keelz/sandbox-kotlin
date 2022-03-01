@@ -1,19 +1,91 @@
-import util.*
+// dsl imports
+import DateUtil.Tense
+import DateUtil.Tense.ago
+import kotlinx.coroutines.*
+import util.Temperature
 import util.Temperature.c2f
-import java.lang.Appendable
+import util.unitsSupported
+import java.lang.Runnable
+import java.util.concurrent.Executors
 import kotlin.math.roundToInt
 import kotlin.properties.Delegates.observable
 import kotlin.properties.Delegates.vetoable
-import java.util.concurrent.Executors
-// dsl imports
-import DateUtil.Tense
-import DateUtil.Tense.*
-import kotlinx.coroutines.*
-import java.lang.Runnable
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    coroutineErrorsTwo()
+    runBlocking {
+        val handler = CoroutineExceptionHandler { _, ex ->
+            println("exception handled: ${ex.message}")
+        }
+
+        val job = launch(Dispatchers.IO + handler) {
+            supervisorScope {
+                withTimeout(3000) {
+                    launch {  }
+                    launch {  }
+                    launch {  }
+                    launch {  }
+                }
+                launch {  }
+                launch {  }
+                launch {
+                    supervisorScope {
+                        launch {  }
+                        launch {  }
+                        launch {  }
+                        launch {  }
+                        launch {  }
+                    }
+                }
+            }
+        }
+
+        job.join()
+    }
+    runBlocking {
+        val job = launch(Dispatchers.Default) {
+            launch { cancelCoroutineOne(checkActive = false) }
+            launch { cancelCoroutineOne(checkActive = true) }
+            launch { cancelCoroutineOne(checkActive = false) }
+            launch { cancelCoroutineOne(checkActive = true) }
+        }
+        println("let them run...")
+        Thread.sleep(1000)
+        println("ok, that's enough, cancel")
+        job.cancelAndJoin()
+    }
+}
+
+suspend fun fetchResponse(callAsync: Boolean) = coroutineScope {
+    val url = "http://httpstat.us/200?sleep=2000"
+    fun getResponse(url: String) {
+        java.net.URL(url).readText()
+    }
+    try {
+        val response = if (callAsync) {
+            withContext(Dispatchers.IO) { getResponse(url) }
+        } else {
+            getResponse(url)
+        }
+
+        println(response)
+    } catch (ex: Exception) {
+        println("fetchResponse called with callAsync $callAsync: ${ex.message}")
+    }
+}
+
+suspend fun cancelCoroutineOne(checkActive: Boolean) = coroutineScope {
+    var count = 0L
+    val max = 10000000000
+    while (if (checkActive) { isActive } else (count < max)) {
+        count++
+    }
+
+    if (count == max) {
+        println("compute, checkActive $checkActive, isActive $isActive ignored cancellation")
+    } else {
+        println("compute, checkActive $checkActive, isActive $isActive bailed out early")
+    }
 }
 
 fun coroutineErrorsTwo() = runBlocking {
