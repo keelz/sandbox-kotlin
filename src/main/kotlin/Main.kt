@@ -13,7 +13,51 @@ import java.lang.Runnable
 import kotlin.system.measureTimeMillis
 
 fun main() {
-    useAirportTwo()
+    coroutineErrorsTwo()
+}
+
+fun coroutineErrorsTwo() = runBlocking {
+    val airportCodes = listOf("LAX", "SF-", "PD-", "SEA")
+    // create a deferred operation list from literal list with 'async' lambda
+    val ops = airportCodes.map { code ->
+        // use Dispatchers.IO + SupervisorJob() context here for error handling
+        async(Dispatchers.IO + SupervisorJob()) {
+            Airport.getAirportData(code)
+        }
+    }
+
+    // loop through each operation
+    ops.forEach { op ->
+        try {
+            // execute each request with 'await'
+            val airport = op.await()
+            println("${airport?.code} ${airport?.delay}")
+        } catch(ex: Exception) {
+            // catch exceptions
+            println("error: ${ex.message?.substring(0..28)}")
+        }
+    }
+}
+
+// coroutineErrorOne
+// handling coroutine launch errors with an error context
+fun coroutineErrorsOne() = runBlocking {
+    val handler = CoroutineExceptionHandler { context, ex ->
+        println("caught: ${context[CoroutineName]} ${ex.message?.substring(0..28)}")
+    }
+    try {
+        val airportCodes = listOf("LAX", "SF-", "PD-", "SEA")
+        val jobs: List<Job> = airportCodes.map { code ->
+            launch(Dispatchers.IO + CoroutineName(code) + handler + SupervisorJob()) {
+                val airport = Airport.getAirportData(code)
+                println("${airport?.code} delay: ${airport?.delay}")
+            }
+        }
+        jobs.forEach { it.join() }
+        jobs.forEach { println("cancelled: ${it.isCancelled}")}
+    } catch(ex: Exception) {
+        println("error: ${ex.message}")
+    }
 }
 
 // useAirportTwo
