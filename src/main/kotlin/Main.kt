@@ -12,7 +12,23 @@ import kotlinx.coroutines.*
 import java.lang.Runnable
 
 fun main() {
-    runCompute()
+    for (prime in primes(start = 17)) {
+        println("received $prime")
+        if (prime > 30) break
+    }
+}
+
+fun primes(start: Int) = sequence {
+    println("starting to look")
+    var index = start
+
+    while (true) {
+        if (index > 1 && (2 until index).none { i -> index % i == 0 }) {
+            yield(index)
+            println("generating next after $index")
+        }
+        index++
+    }
 }
 
 fun runCompute() = runBlocking<Unit> {
