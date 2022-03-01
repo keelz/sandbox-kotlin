@@ -10,9 +10,49 @@ import DateUtil.Tense
 import DateUtil.Tense.*
 import kotlinx.coroutines.*
 import java.lang.Runnable
+import kotlin.system.measureTimeMillis
 
 fun main() {
-    useIteratorOne()
+    useAirportTwo()
+}
+
+// useAirportTwo
+// a variation of useAirport which uses 'async()' and 'await()' on the 'Dispatchers.IO' thread pool
+fun useAirportTwo() = runBlocking {
+    val format = "%-30s%-10s%-20s%-10s"
+    println(String.format(format, "Name", "Code", "Temperature", "Delay"))
+    (1..70).forEach { _ -> print("=") }
+    print("\n")
+
+    val time = measureTimeMillis {
+        val airportCodes = listOf("LAX", "SFO", "PDX", "SEA", "PHX")
+        val data: List<Deferred<Airport?>> = airportCodes.map { withCode ->
+            async(Dispatchers.IO) { Airport.getAirportData(withCode) }
+        }
+
+        data.mapNotNull { d -> d.await() }
+            .forEach { d ->
+                println(String.format(format, d.name, d.code, d.weather.temperature[0], d.delay))
+            }
+    }
+
+    println("time taken $time ms")
+}
+
+fun useAirportOne() {
+    val format = "%-10s%-20s%-10s"
+    println(String.format(format, "Code", "Temperature", "Delay"))
+
+    val time = measureTimeMillis {
+        val airportCodes = listOf("LAX", "SFO", "PDX", "SEA")
+        val airportData: List<Airport> = airportCodes.mapNotNull { code -> Airport.getAirportData(code) }
+
+        airportData.forEach { airport ->
+            println(String.format(format, airport.code, airport.weather.temperature[0], airport.delay))
+        }
+    }
+
+    println("time taken $time ms")
 }
 
 fun useIteratorOne() {
