@@ -12,6 +12,56 @@ import kotlinx.coroutines.*
 import java.lang.Runnable
 
 fun main() {
+    useIteratorOne()
+}
+
+fun useIteratorOne() {
+    operator fun ClosedRange<String>.iterator() = object: Iterator<String> {
+        private val next = StringBuilder(start)
+        private val last = endInclusive
+
+        override fun hasNext() = last >= next.toString() && last.length >= next.length
+
+        override fun next(): String {
+            val result = next.toString()
+            val lastCharacter = next.last()
+            if (lastCharacter < Char.MAX_VALUE) {
+                next.setCharAt(next.length - 1, lastCharacter + 1)
+            } else {
+                next.append(Char.MIN_VALUE)
+            }
+            return result
+        }
+    }
+    for (word in "hell".."help") { print(word) }
+}
+
+// useIteratorTwo
+// a variant of useIteratorOne example: use of an 'iterator' lambda and 'yield' statement
+// leaning on coroutines to create an iterator extension to the ClosedRange class
+fun useIteratorTwo() {
+    // the iterator() function of ClosedRange<String> is returning an object that implements
+    // the Iterator<String> interface. we do this with an iterator lambda and the 'yield' statement
+    operator fun ClosedRange<String>.iterator(): Iterator<String> = iterator {
+        val next = StringBuilder(start)
+        val last = endInclusive
+        while (last >= next.toString() && last.length >= next.length) {
+            val result = next.toString()
+            val lastCharacter = next.last()
+            if (lastCharacter < Char.MAX_VALUE) {
+                next.setCharAt(next.length - 1, lastCharacter + 1)
+            } else {
+                next.append(Char.MIN_VALUE)
+            }
+            yield(result)
+        }
+    }
+
+    // we created an iterator operator to support the '..' syntax with strings by extending the ClosedRange class.
+    for (word in "hell".."help") { print(word) }
+}
+
+fun usePrimes() {
     for (prime in primes(start = 17)) {
         println("received $prime")
         if (prime > 30) break
